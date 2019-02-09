@@ -53,6 +53,7 @@ app.use('/', require('./routes/index.js'));
 
 app.use('/user', require('./routes/user.js'));
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, console.log(`Node server has been startd on ${PORT}`));
+app.listen(3000, ()=>{
+  console.log("App started at port 3000")});
