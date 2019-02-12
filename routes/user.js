@@ -1,9 +1,10 @@
 const express = require('express');
- 
+const sgMail = require('@sendgrid/mail');
 const router =  express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 // Load User model
+sgMail.setApiKey(process.env.SEND_GRID_API);
 const User = require('../models/User');
 router.get('/', (req, res) => res.render('welcome'));
 
@@ -63,6 +64,15 @@ router.post('/register',(req, res) =>{
                         'success_msg',
                         'You are now registered and can log in'
                       );
+                      const msg = {
+                        to: newUser.email,
+                        from: 'adityavadityav@gmail.com',
+                        subject: 'Welcome to E H R,your registration is succesfull',
+                        text: 'Please login to continue',
+                        html: '<strong>Health record based on blockchain</strong>',
+                      }
+                      sgMail.send(msg);
+                      console.log(msg);
                       res.redirect('/user/login');
                     })
                     .catch(err => console.log(err));
