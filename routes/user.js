@@ -1,24 +1,30 @@
 const express = require('express');
 const sgMail = require('@sendgrid/mail');
-const router =  express.Router();
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const multer = require('multer');
 // Load User model
+
+const accountSid = process.env.TW_SID;
+const authToken = process.env.TW_AT;
+const client = require('twilio')(accountSid, authToken);
+
+
 sgMail.setApiKey(process.env.SEND_GRID_API);
 const User = require('../models/User');
 router.get('/', (req, res) => res.render('welcome'));
 
-router.get('/login',(req, res) => res.render('login'));
+router.get('/login', (req, res) => res.render('login'));
 
-router.get('/register',(req, res) => res.render('register'));
+router.get('/register', (req, res) => res.render('register'));
 
-router.post('/register',(req, res) =>{
-    let errors = [];
-    const { fname, lname, phone, address, email, age, blood, gender,  password, password2 } = req.body;
-    
+router.post('/register', (req, res) => {
+  let errors = [];
+  const { fname, lname, phone, address, email, age, blood, gender, password, password2 } = req.body;
 
-  if (!fname || !lname || !email || !password || !password2|| !phone || !blood|| !gender ||!age ||!address) {
+
+  if (!fname || !lname || !email || !password || !password2 || !phone || !blood || !gender || !age || !address) {
     errors.push({ msg: 'Please enter all fields' });
   }
 
@@ -44,78 +50,87 @@ router.post('/register',(req, res) =>{
       password,
       password2
     });
-  }else{
+  } else {
     User.findOne({ email: email }).then(user => {
-        if (user) {
-          errors.push({ msg: 'Email already exists' });
-          res.render('register', {
-            errors,
-            fname,
-            lname,
-            address,
-            phone,
-            age,
-            gender,
-            blood,
-            email,
-            password,
-            password2
+      if (user) {
+        errors.push({ msg: 'Email already exists' });
+        res.render('register', {
+          errors,
+          fname,
+          lname,
+          address,
+          phone,
+          age,
+          gender,
+          blood,
+          email,
+          password,
+          password2
+        });
+      } else {
+        const newUser = new User({
+          fname,
+          lname,
+          phone,
+          address,
+          email,
+          age,
+          blood,
+          gender,
+          password
+        });
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser
+              .save()
+              .then(user => {
+                req.flash(
+                  'success_msg',
+                  'You are now registered and can log in'
+                );
+                client.messages
+                  .create({
+                    body: 'Your E H R registration is succesfull',
+                    from: '+15109240840',
+                    to: '+91'+newUser.phone
+                  })
+                  .then(message => console.log(message))
+                  .catch(err => console.log(err));;
+                  console.log(newUser.phone);
+                const msg = {
+                  to: newUser.email,
+                  from: 'adityavadityav@gmail.com',
+                  subject: 'Welcome to E H R,your registration is succesfull',
+                  text: 'Please login to continue',
+                  html: '<strong>Health record based on blockchain</strong>',
+                }
+                sgMail.send(msg);
+                console.log(msg);
+                res.redirect('/user/login');
+              })
+              .catch(err => console.log(err));
           });
-        } else {
-            const newUser = new User({
-              fname,
-              lname,
-              phone,
-              address,
-              email,
-              age,
-              blood,
-              gender,
-              password
-            });
-            bcrypt.genSalt(10, (err, salt) => {
-                bcrypt.hash(newUser.password, salt, (err, hash) => {
-                  if (err) throw err;
-                  newUser.password = hash;
-                  newUser
-                    .save()
-                    .then(user => {
-                      req.flash(
-                        'success_msg',
-                        'You are now registered and can log in'
-                      );
-                      const msg = {
-                        to: newUser.email,
-                        from: 'adityavadityav@gmail.com',
-                        subject: 'Welcome to E H R,your registration is succesfull',
-                        text: 'Please login to continue',
-                        html: '<strong>Health record based on blockchain</strong>',
-                      }
-                      sgMail.send(msg);
-                      console.log(msg);
-                      res.redirect('/user/login');
-                    })
-                    .catch(err => console.log(err));
-                });
-              });
-            }
-          });
-      
+        });
+      }
+    });
+
   }
 });
-router.post('/upload_doc',(req ,res) => {
+router.post('/upload_doc', (req, res) => {
   res.send(req.body);
 })
 router.post('/login', (req, res, next) => {
-    passport.authenticate('local', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/user/login',
-      failureFlash: true
-    })(req, res, next);
-  });
-  router.get('/logout', (req, res) => {
-    req.logout();
-    req.flash('success_msg', 'You are logged out');
-    res.redirect('/user/login');
-  });
+  passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/user/login',
+    failureFlash: true
+  })(req, res, next);
+});
+router.get('/logout', (req, res) => {
+  req.logout();
+  req.flash('success_msg', 'You are logged out');
+  res.redirect('/user/login');
+});
 module.exports = router;

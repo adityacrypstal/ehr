@@ -5,7 +5,8 @@ const passport = require('passport');
 const multer = require('multer');
 // Load User model
 const User = require('../models/User');
-
+const Document = require('../models/Document');
+const path = require('path');
 // Set The Storage Engine
 const storage = multer.diskStorage({
     destination: './public/uploads/',
@@ -30,7 +31,19 @@ router.post('/upload_doc', (req, res) => {
             if (req.file == undefined) {
                 res.send('No file selected')
             } else {
-                res.send(re.file.fieldname);
+
+                var addr = '/uploads/'+req.file.filename;
+                const{type, msg} = req.body;
+                const user = req.user._id;
+                const newDocument = new Document({
+                    user,
+                    type,
+                    msg,
+                    addr
+                });
+                newDocument.save()
+                .then(res.redirect('/dashboard'))
+                .catch(err => console.log(err));
             }
         }
     });
