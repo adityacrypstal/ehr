@@ -1,18 +1,22 @@
 const express = require('express');
-const sgMail = require('@sendgrid/mail');
+const sgMail = require('@sendgrid/mail');//Email gateway
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const passport = require('passport');
-const multer = require('multer');
-// Load User model
+const path = require('path');
+const bcrypt = require('bcryptjs');//Hashing package
+const passport = require('passport');//Auth package
+var fs = require('fs');//File System
 
+// Load User model
+const User = require('../models/User');
+
+//Twilio init
 const accountSid = process.env.TW_SID;
 const authToken = process.env.TW_AT;
 const client = require('twilio')(accountSid, authToken);
 
-
+//Sendfrid init
 sgMail.setApiKey(process.env.SEND_GRID_API);
-const User = require('../models/User');
+//Routing starts
 router.get('/', (req, res) => res.render('welcome'));
 
 router.get('/login', (req, res) => res.render('login'));
@@ -23,7 +27,7 @@ router.post('/register', (req, res) => {
   let errors = [];
   const { fname, lname, phone, address, email, age, blood, gender, password, password2 } = req.body;
 
-
+  // Registration validation starts here
   if (!fname || !lname || !email || !password || !password2 || !phone || !blood || !gender || !age || !address) {
     errors.push({ msg: 'Please enter all fields' });
   }
@@ -68,6 +72,7 @@ router.post('/register', (req, res) => {
           password2
         });
       } else {
+        //Creates User in model
         const newUser = new User({
           fname,
           lname,
@@ -79,6 +84,7 @@ router.post('/register', (req, res) => {
           gender,
           password
         });
+        //Hashes password and compare pass1 with pass2
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
@@ -86,19 +92,34 @@ router.post('/register', (req, res) => {
             newUser
               .save()
               .then(user => {
+                //Registration action starts here
                 req.flash(
                   'success_msg',
                   'You are now registered and can log in'
                 );
+                //JSON file creation
+                var obj = {
+                  table: []
+                };
+                obj.table.push({ id: 1, text: "Info", time: "Timestamp" });
+                var json = JSON.stringify(obj);
+                var fileName = __dirname+'/../public/record/'+user._id+'.json';
+                
+                fs.writeFile(fileName, json, (err) => {
+                  if (err) throw err;
+                  console.log('File is created');
+                });
+
+                //Twillio action starts here
                 client.messages
                   .create({
                     body: 'Your E H R registration is succesfull',
                     from: '+15109240840',
-                    to: '+91'+newUser.phone
+                    to: '+91' + newUser.phone
                   })
-                  .then(message => console.log(message))
-                  .catch(err => console.log(err));;
-                  console.log(newUser.phone);
+                  .then(message => console.log("Message send"))
+                  .catch(err => console.log(err));
+                //Sendgrid action starts here
                 const msg = {
                   to: newUser.email,
                   from: 'adityavadityav@gmail.com',
@@ -111,6 +132,7 @@ router.post('/register', (req, res) => {
                 res.redirect('/user/login');
               })
               .catch(err => console.log(err));
+            //Registration action ends here
           });
         });
       }
@@ -118,9 +140,7 @@ router.post('/register', (req, res) => {
 
   }
 });
-router.post('/upload_doc', (req, res) => {
-  res.send(req.body);
-})
+//Passport login procedure
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/dashboard',
