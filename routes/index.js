@@ -8,7 +8,7 @@ router.get('/',(req, res) => res.render('welcome'));
 module.exports = router;
 
 router.get('/dashboard',ensureAuthenticated, (req, res)=>{
-    Document.find({"user":req._id}).then((Docs)=>{
+    Document.find({"user":req.user._id}).then((Docs)=>{
         res.render('dash', {
             Docs,
             user: req.user
