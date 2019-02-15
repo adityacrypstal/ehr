@@ -56,6 +56,8 @@ app.use('/', require('./routes/index.js'));
 
 app.use('/user', require('./routes/user.js'));
 
+app.use('/dash',require('./routes/dash.js'));
+
 // const PORT = process.env.PORT || 3000;
 
 app.listen(process.env.PORT || 5000, ()=>{

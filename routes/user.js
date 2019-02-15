@@ -3,6 +3,7 @@ const sgMail = require('@sendgrid/mail');
 const router =  express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const multer = require('multer');
 // Load User model
 sgMail.setApiKey(process.env.SEND_GRID_API);
 const User = require('../models/User');
@@ -102,6 +103,9 @@ router.post('/register',(req, res) =>{
       
   }
 });
+router.post('/upload_doc',(req ,res) => {
+  res.send(req.body);
+})
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
       successRedirect: '/dashboard',
