@@ -122,21 +122,30 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card card-chart">
-                                <div class="card-header card-header-success">
+                                <div class="card-header <%=user.safe == true ? 'card-header-success':'card-header-danger'%>">
                                     <img src="../assets/img/record.png" alt="Lab" width="100%" class="responsive-img">
                                 </div>
                                 <div class="card-body">
                                     <h4 class="card-title">Primary Health Record</h4>
                                     <p class="card-category">
-                                        <span class="text-success"></i> 0% </span>
+                                        <span class="text-success"></i> <%=size%>% </span>
                                         storage is consumed.</p>
                                 </div>
                                 <div class="card-footer">
-                                    <a href='<%="/record/"+user._id+".json"%>' target="_blank">
+                                    <%if(user.safe == false){%>
+                                        <a href='<%="/record/"+user._id+".json"%>' target="_blank">
+                                            <div class="stats">
+                                                <i class="material-icons">get_app</i>Document 
+                                            </div>
+                                        </a>
+                                    <%}%>
+                                    <a href='/ipfs/addFile'target="_blank">
                                         <div class="stats">
-                                            <i class="material-icons">get_app</i> Click here to get your document
+                                            <i class="material-icons">vpn_key</i> <%= user.safe == true ?'LOCKED':'LOCK'%>
                                         </div>
                                     </a>
+
+
                                 </div>
                             </div>
                         </div>

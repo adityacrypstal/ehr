@@ -103,8 +103,7 @@ router.post('/register', (req, res) => {
                 };
                 obj.table.push({ id: 1, text: "Info", time: "Timestamp" });
                 var json = JSON.stringify(obj);
-                var fileName = __dirname+'/../public/record/'+user._id+'.json';
-                
+                var fileName = __dirname + '/../public/record/' + user._id + '.json';
                 fs.writeFile(fileName, json, (err) => {
                   if (err) throw err;
                   console.log('File is created');
@@ -128,7 +127,6 @@ router.post('/register', (req, res) => {
                   html: '<strong>Health record based on blockchain</strong>',
                 }
                 sgMail.send(msg);
-                console.log(msg);
                 res.redirect('/user/login');
               })
               .catch(err => console.log(err));

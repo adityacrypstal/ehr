@@ -41,6 +41,10 @@ const UserSchema = new mongoose.Schema({
     date:{
         type:Date,
         default:Date.now
+    },
+    safe:{
+        type:Boolean,
+        default:false,
     }
 });
 const User = mongoose.model('User',UserSchema);
