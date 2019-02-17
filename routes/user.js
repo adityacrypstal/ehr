@@ -1,10 +1,9 @@
 const express = require('express');
 const sgMail = require('@sendgrid/mail');//Email gateway
+const file = require('../controllers/file.js');
 const router = express.Router();
-const path = require('path');
 const bcrypt = require('bcryptjs');//Hashing package
 const passport = require('passport');//Auth package
-var fs = require('fs');//File System
 
 // Load User model
 const User = require('../models/User');
@@ -16,6 +15,7 @@ const client = require('twilio')(accountSid, authToken);
 
 //Sendfrid init
 sgMail.setApiKey(process.env.SEND_GRID_API);
+
 //Routing starts
 router.get('/', (req, res) => res.render('welcome'));
 
@@ -97,36 +97,21 @@ router.post('/register', (req, res) => {
                   'success_msg',
                   'You are now registered and can log in'
                 );
-                //JSON file creation
-                var obj = {
-                  table: []
-                };
-                obj.table.push({ id: 1, text: "Info", time: "Timestamp" });
-                var json = JSON.stringify(obj);
-                var fileName = __dirname + '/../public/record/' + user._id + '.json';
-                fs.writeFile(fileName, json, (err) => {
-                  if (err) throw err;
-                  console.log('File is created');
-                });
-
-                //Twillio action starts here
-                client.messages
-                  .create({
-                    body: 'Your E H R registration is succesfull',
-                    from: '+15109240840',
-                    to: '+91' + newUser.phone
-                  })
-                  .then(message => console.log("Message send"))
-                  .catch(err => console.log(err));
-                //Sendgrid action starts here
                 const msg = {
-                  to: newUser.email,
+                  to: user.email,
                   from: 'adityavadityav@gmail.com',
                   subject: 'Welcome to E H R,your registration is succesfull',
                   text: 'Please login to continue',
                   html: '<strong>Health record based on blockchain</strong>',
-                }
-                sgMail.send(msg);
+                };
+                file.createFile(user)
+                  .then((file) => {
+                    console.log(file);
+                    sgMail.send(msg)
+                      .then((mail) => console.log(mail))
+                      .catch((err) => console.log(err));
+                  })
+                  .catch((err) => console.log(err));
                 res.redirect('/user/login');
               })
               .catch(err => console.log(err));
