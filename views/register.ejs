@@ -7,6 +7,16 @@
         <% include ./partials/messages %>
 
         <form action="/user/register" method="POST">
+          <br>
+          <div class="form-group" style="margin-left:33%;">
+              <label class="radio-inline">
+                  <input type="radio" name="role" value="true" checked> Patient
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="role" value="false"> Doctor
+                </label>
+                
+          </div>
           <div class="form-group">
             <label for="fname">First Name</label>
             <input

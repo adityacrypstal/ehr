@@ -60,6 +60,8 @@ app.use('/dash',require('./routes/dash.js'));
 
 app.use('/ipfs', require('./routes/ipfs.js'));
 
+app.use('/doctor', require('./routes/doctor.js'));
+
 // const PORT = process.env.PORT || 3000;
 
 app.listen(process.env.PORT || 5000, ()=>{

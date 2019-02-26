@@ -1,6 +1,6 @@
 const express = require('express');
-const sgMail = require('@sendgrid/mail');//Email gateway
 const file = require('../controllers/file.js');
+const gateway = require('../controllers/gateway.js');
 const router = express.Router();
 const bcrypt = require('bcryptjs');//Hashing package
 const passport = require('passport');//Auth package
@@ -8,13 +8,7 @@ const passport = require('passport');//Auth package
 // Load User model
 const User = require('../models/User');
 
-//Twilio init
-const accountSid = process.env.TW_SID;
-const authToken = process.env.TW_AT;
-const client = require('twilio')(accountSid, authToken);
 
-//Sendfrid init
-sgMail.setApiKey(process.env.SEND_GRID_API);
 
 //Routing starts
 router.get('/', (req, res) => res.render('welcome'));
@@ -25,7 +19,7 @@ router.get('/register', (req, res) => res.render('register'));
 
 router.post('/register', (req, res) => {
   let errors = [];
-  const { fname, lname, phone, address, email, age, blood, gender, password, password2 } = req.body;
+  const { role, fname, lname, phone, address, email, age, blood, gender, password, password2 } = req.body;
 
   // Registration validation starts here
   if (!fname || !lname || !email || !password || !password2 || !phone || !blood || !gender || !age || !address) {
@@ -41,49 +35,16 @@ router.post('/register', (req, res) => {
   }
 
   if (errors.length > 0) {
-    res.render('register', {
-      errors,
-      fname,
-      lname,
-      address,
-      phone,
-      age,
-      gender,
-      blood,
-      email,
-      password,
-      password2
-    });
+    res.render('register', {errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
   } else {
-    User.findOne({ email: email }).then(user => {
-      if (user) {
-        errors.push({ msg: 'Email already exists' });
-        res.render('register', {
-          errors,
-          fname,
-          lname,
-          address,
-          phone,
-          age,
-          gender,
-          blood,
-          email,
-          password,
-          password2
-        });
-      } else {
+    // User.findOne({ email: email }).then(user => {
+    //   if (user) {
+    //     errors.push({ msg: 'Email already exists' });
+    //     res.render('register', {
+    //       errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
+    //   } else {
         //Creates User in model
-        const newUser = new User({
-          fname,
-          lname,
-          phone,
-          address,
-          email,
-          age,
-          blood,
-          gender,
-          password
-        });
+        const newUser = new User({ role, fname, lname, phone, address, email, age, blood, gender, password });
         //Hashes password and compare pass1 with pass2
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -97,30 +58,25 @@ router.post('/register', (req, res) => {
                   'success_msg',
                   'You are now registered and can log in'
                 );
-                const msg = {
-                  to: user.email,
-                  from: 'adityavadityav@gmail.com',
-                  subject: 'Welcome to E H R,your registration is succesfull',
-                  text: 'Please login to continue',
-                  html: '<strong>Health record based on blockchain</strong>',
-                };
-                file.createFile(user)
-                  .then((file) => {
-                    console.log(file);
-                    sgMail.send(msg)
-                      .then((mail) => console.log(mail))
-                      .catch((err) => console.log(err));
+                gateway.registration(user)
+                  .then((gateway) => {
+                    if(user.role){
+                      file.createFile(user)
+                      .then((file) => {
+                        console.log(gateway, file);
+                      })
+                      .catch((err) => console.log(err))
+                    }
                   })
                   .catch((err) => console.log(err));
                 res.redirect('/user/login');
               })
               .catch(err => console.log(err));
             //Registration action ends here
-          });
+            });
         });
-      }
-    });
-
+    //   }
+    // });
   }
 });
 //Passport login procedure
