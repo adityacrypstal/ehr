@@ -12,7 +12,7 @@ const registration = (user) => {
     const msg = {
         to: user.email,
         from: 'adityavadityav@gmail.com',
-        subject: 'Welcome to E H R,your registration is succesfull',
+        subject: 'Welcome to E H R,your registration is succesfull.Id:'+user._id,
         text: 'Please login to continue',
         html: '<strong>Health record based on blockchain</strong>',
     };
@@ -21,7 +21,7 @@ const registration = (user) => {
             .then(() => {
                 client.messages
                     .create({
-                        body: 'Your E H R registration is succesfull',
+                        body: 'Your E H R registration is succesfull'+user._id,
                         from: '+15109240840',
                         to: '+91' + user.phone
                     }).catch((err) => reject(err));
