@@ -139,7 +139,7 @@
                                             </div>
                                         </a>
                                     <%}%>
-                                    <a href='/ipfs/addFile'>
+                                    <a href= "<%= user.safe == false ?'/ipfs/addFile':'LOCK'%> " >
                                         <div class="stats">
                                             <i class="material-icons">vpn_key</i> <%= user.safe == true ?'LOCKED':'LOCK'%>
                                         </div>

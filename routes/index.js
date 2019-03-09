@@ -3,6 +3,7 @@ const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 const User = require('../models/User');
 const Logs = require('../models/Logs');
+const Query = require('../controllers/queries');
 const Document = require('../models/Document');
 var fs = require('fs');//File System
 
@@ -26,9 +27,14 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
                 size: fileSizeInMegabytes
             })
         }else{
-            res.render('dashboard', {
-                user: req.user,
-            })
+            Query.requestedFile(req.user._id,(err,hash)=>{
+                if (err) throw err;
+                res.render('dashboard', {
+                    user: req.user,
+                    files: hash
+                })
+            });
+            
         }
     }), (e) => {
         res.send('error');

@@ -18,4 +18,4 @@ var createFile =  (user)=>{
       });
 }
 
-module.exports = {createFile};
+module.exports = { createFile };

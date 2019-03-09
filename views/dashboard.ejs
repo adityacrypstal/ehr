@@ -9,9 +9,11 @@
     <title>
         E H R || Blockchain
     </title>
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+        name='viewport' />
     <!--     Fonts and icons     -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
     <!-- CSS Files -->
     <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
@@ -82,8 +84,8 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="material-icons">notifications</i>
                                     <span class="notification">5</span>
                                     <p class="d-lg-none d-md-block">
@@ -119,14 +121,45 @@
             <div class="content">
                 <div class="container-fluid">
 
+                    <%if(!files){%>
                         <div class="row" style="margin-top: 25px;margin-bottom: 25px;">
-                                <div class="col-lg-4 col-lg-offset-4">
-                                    <form action="/doctor/fileRequest" id="request" method="POST">
-                                            <input type="search" id="search" name="id" class="form-control" placeholder="Get Patient details">
-                                    </form>
-                                </div>
-                                <button style="color:white;background-color:purple;" onclick="request()">Request</button>
+                            <div class="col-lg-4 col-lg-offset-4">
+                                <form action="/doctor/fileRequest" id="request" method="POST">
+                                    <input type="search" id="search" name="id" class="form-control"
+                                        placeholder="Get Patient details">
+                                </form>
                             </div>
+                            <button style="color:white;background-color:purple;" onclick="request()">Request</button>
+                        </div>
+                    <%}else{%>
+                    <div class="row">
+                       
+
+                            <div class="col-md-4">
+                                <div class="card card-chart">
+                                    <div class="card-header card-header-danger">
+                                        <img src="../assets/img/lab.jpg" alt="Lab" width="100%" class="responsive-img">
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            Patient 1
+                                        </h4>
+                                        <p class="card-category">
+                                            Please <a href="doctor/removefile">delete</a> after use
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://gateway.ipfs.io/ipfs/<%=files%>" target="_blank">
+                                            <div class="stats">
+                                                <i class="material-icons">get_app</i> Click here to get your document
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+    
+                    </div>
+                    <%};%>
 
                 </div>
 
@@ -343,7 +376,7 @@
                 });
             });
         });
-        function request(){
+        function request() {
             document.getElementById("request").submit();
         }
     </script>

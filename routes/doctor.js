@@ -28,21 +28,21 @@ router.post('/fileRequest', ensureAuthenticated, (req, res) => {
             doctor_id
         });
         newLog.save()
-        .then((msg) => {
-            let data = [{
-                "patient": user,
-                "doctor": req.user,
-                "url":process.env.LOCAL+'/doctor/helloDoctor/'+msg._id
-            }]
-            gateway.requestFile(data)
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err))
-        })
-        .catch(err => console.log(err));
-        
+            .then((msg) => {
+                let data = [{
+                    "patient": user,
+                    "doctor": req.user,
+                    "url": process.env.LOCAL + '/doctor/helloDoctor/' + msg._id
+                }]
+                gateway.requestFile(data)
+                    .then((des) => {console.log(des);res.redirect('/dashboard')})
+                    .catch((err) => console.log(err))
+            })
+            .catch(err => console.log(err));
+
     });
 });
-router.get('/helloDoctor/:id',(req ,res)=>{
+router.get('/helloDoctor/:id', (req, res) => {
     Logs.findByIdAndUpdate(req.params.id, {
         $set: {
             status: true,
@@ -50,9 +50,19 @@ router.get('/helloDoctor/:id',(req ,res)=>{
     }, (err) => {
         if (err) throw err;
     }).then(
-        console.log("Permission granted")
+        res.send("<h1>Thank you ! Permission granted.</h1>")
+
     );
-    
+
 })
+router.get('/removefile', ensureAuthenticated, (req, res) => {
+    var myquery = { doctor_id: req.user._id, status: true};
+    var newvalues = { $set: { status: false } };
+    Logs.updateOne(myquery, newvalues, { sort: { 'time': -1 } }, function (err, res) {
+        if (err) throw err;
+    })
+    .then(des => res.redirect('/dashboard') )
+    .catch(err => console.log(err));
+});
 
 module.exports = router;
