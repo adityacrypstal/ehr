@@ -28,6 +28,7 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
             })
         }else{
             Query.requestedFile(req.user._id,(err,hash)=>{
+                if (err) throw err;
                 if(hash){
                     Query.getPatient(hash.patient,(err, patient)=>{
                         if (patient){

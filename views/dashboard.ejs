@@ -19,6 +19,7 @@
     <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/demo/demo.css" rel="stylesheet" />
+    <script type="text/javascript" src="../assets/js/instascan.min.js"></script>
 </head>
 
 <body class="">
@@ -122,44 +123,48 @@
                 <div class="container-fluid">
 
                     <%if(!files){%>
-                        <div class="row" style="margin-top: 25px;margin-bottom: 25px;">
-                            <div class="col-lg-4 col-lg-offset-4">
-                                <p id="error" style="color: red;"></p>
-                                <form action="/doctor/fileRequest" id="request" method="POST">
-                                    <input type="search" id="search" name="id" class="form-control"
-                                        placeholder="Get Patient details">
-                                </form>
-                            </div>
-                            <button style="color:white;background-color:purple;" onclick="request()">Request</button>
+                    <div class="row" style="margin-top: 25px;margin-bottom: 25px;">
+                        <div class="col-lg-4 col-lg-offset-4">
+                            <p id="error" style="color: red;"></p>
+                            <form action="/doctor/fileRequest" id="request" method="POST">
+                                <input type="search" id="search" name="id" class="form-control"
+                                    placeholder="Get Patient details">
+                            </form>
                         </div>
+                        <button style="color:white;background-color:purple;" onclick="request()">Request</button>
+                        <button style="color:white;background-color:purple;" onclick="scanQR()">Scan QR</button>
+                    </div>
+                    <div class="row">
+                        <video id="preview"></video>
+                    </div>
                     <%}else{%>
                     <div class="row">
-                       
 
-                            <div class="col-md-4">
-                                <div class="card card-chart">
-                                    <div class="card-header card-header-success">
-                                        <img src="../assets/img/record.png" alt="Lab" width="100%" class="responsive-img">
-                                    </div>
-                                    <div class="card-body">
-                                        <h4 class="card-title">
-                                            <%=patient.fname+' '+patient.lname%>
-                                            <i style="font-size:10px;">(<%=patient._id%>)</i>
-                                        </h4>
-                                        <p class="card-category">
-                                            Please <a href="doctor/removefile">delete</a> after use
-                                        </p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a href="/ipfs/getFIle/<%=files%>" target="_blank">
-                                            <div class="stats">
-                                                <i class="material-icons">get_app</i> Click here to get your document
-                                            </div>
-                                        </a>
-                                    </div>
+
+                        <div class="col-md-4">
+                            <div class="card card-chart">
+                                <div class="card-header card-header-success">
+                                    <img src="../assets/img/record.png" alt="Lab" width="100%" class="responsive-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        <%=patient.fname+' '+patient.lname%>
+                                        <i style="font-size:10px;">(<%=patient._id%>)</i>
+                                    </h4>
+                                    <p class="card-category">
+                                        Please <a href="doctor/removefile">delete</a> after use
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="/ipfs/getFIle/<%=files%>" target="_blank">
+                                        <div class="stats">
+                                            <i class="material-icons">get_app</i> Click here to get your document
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-    
+                        </div>
+
                     </div>
                     <%};%>
 
@@ -380,12 +385,27 @@
         });
         function request() {
             var input = document.getElementById('search').value;
-            if (input.length!= 24){
+            if (input.length != 24) {
                 document.getElementById('error').innerHTML = "Invalid user id";
                 document.getElementById('search').value = '';
-            }else{
+            } else {
                 document.getElementById("request").submit();
             }
+        }
+        function scanQR() {
+            let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+            scanner.addListener('scan', function (content) {
+                document.getElementById("search").value = content;
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+            });
         }
     </script>
 
