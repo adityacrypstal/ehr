@@ -37,12 +37,12 @@ router.post('/register', (req, res) => {
   if (errors.length > 0) {
     res.render('register', {errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
   } else {
-    // User.findOne({ email: email }).then(user => {
-    //   if (user) {
-    //     errors.push({ msg: 'Email already exists' });
-    //     res.render('register', {
-    //       errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
-    //   } else {
+    User.findOne({ email: email }).then(user => {
+      if (user) {
+        errors.push({ msg: 'Email already exists' });
+        res.render('register', {
+          errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
+      } else {
         //Creates User in model
         const newUser = new User({ role, fname, lname, phone, address, email, age, blood, gender, password });
         //Hashes password and compare pass1 with pass2
@@ -75,8 +75,8 @@ router.post('/register', (req, res) => {
             //Registration action ends here
             });
         });
-    //   }
-    // });
+      }
+    });
   }
 });
 //Passport login procedure

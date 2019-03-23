@@ -28,11 +28,26 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
             })
         }else{
             Query.requestedFile(req.user._id,(err,hash)=>{
-                if (err) throw err;
-                res.render('dashboard', {
-                    user: req.user,
-                    files: hash
-                })
+                if(hash){
+                    Query.getPatient(hash.patient,(err, patient)=>{
+                        if (patient){
+                            req.session.current_patient = patient._id;
+                        }
+                        if (err) throw err;
+                        res.render('dashboard', {
+                            user: req.user,
+                            files: hash.hash,
+                            patient: patient,
+                        })
+                    })
+                }else{
+                    res.render('dashboard', {
+                        user: req.user,
+                        files: null,
+                        patient: null,
+                    })
+                }
+                
             });
             
         }

@@ -15,7 +15,7 @@ const Logs = require('../models/Logs');
 
 //Routing starts
 router.get('/', (req, res) => res.render('welcome'));
-
+//Doctor requesting patient
 router.post('/fileRequest', ensureAuthenticated, (req, res) => {
     User.findOne({ "_id": req.body.id }, (err, user) => {
         if (err) {
@@ -42,6 +42,7 @@ router.post('/fileRequest', ensureAuthenticated, (req, res) => {
 
     });
 });
+//Patient approving doctor request
 router.get('/helloDoctor/:id', (req, res) => {
     Logs.findByIdAndUpdate(req.params.id, {
         $set: {
@@ -55,13 +56,17 @@ router.get('/helloDoctor/:id', (req, res) => {
     );
 
 })
+//Remove available files from doctor panel
 router.get('/removefile', ensureAuthenticated, (req, res) => {
     var myquery = { doctor_id: req.user._id, status: true};
     var newvalues = { $set: { status: false } };
     Logs.updateOne(myquery, newvalues, { sort: { 'time': -1 } }, function (err, res) {
         if (err) throw err;
     })
-    .then(des => res.redirect('/dashboard') )
+    .then(des => {
+        delete req.session.current_patient
+        res.redirect('/dashboard')
+    } )
     .catch(err => console.log(err));
 });
 

@@ -7,12 +7,12 @@ const client = require('twilio')(accountSid, authToken);
 
 //Sendfrid init
 sgMail.setApiKey(process.env.SEND_GRID_API);
-
+//SMS for registration
 const registration = (user) => {
     const msg = {
         to: user.email,
         from: 'adityavadityav@gmail.com',
-        subject: 'Welcome to E H R,your registration is succesfull.Id:'+user._id,
+        subject: 'Welcome to E H R,your registration is succesfull.Here is you EHR UID:'+user._id,
         text: 'Please login to continue',
         html: '<strong>Health record based on blockchain</strong>',
     };
@@ -30,7 +30,7 @@ const registration = (user) => {
             .catch((err) => reject(err));
     });
 }
-
+//Doctor requesting file from patient SMS
 const requestFile = (data) => {
     return new Promise((resolve, reject) => {
         client.messages
