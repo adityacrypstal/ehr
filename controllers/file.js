@@ -7,7 +7,7 @@ const createFile =  (user)=>{
      var obj = {
         record: []
       };
-      obj.record.push({ id: 1, date: date, description: "Back Pain with swelling ", prescription:"Nonsteroidal ", BP:"120/80", BS:"125",Comment:"Under observation for 2 days" },{ id: 2, date: date, description: "Pain in throat", prescription:"acetaminophen ", BP:"110/80", BS:"115",Comment:"rest for 3 days" });
+      obj.record.push({ id: 1, date: date, description: "Back Pain with swelling ", prescription:"Nonsteroidal ", BP:"120/80", BS:"125",Comment:"Under observation for 2 days", Doctor:"Someone"},{ id: 2, date: date, description: "Pain in throat", prescription:"acetaminophen ", BP:"110/80", BS:"115",Comment:"rest for 3 days",Doctor:"Someone" });
       var json = JSON.stringify(obj);
       var fileName = __dirname + '/../public/record/' + user._id + '.json';
       return new Promise((resolve, reject) =>{

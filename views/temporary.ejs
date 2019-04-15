@@ -32,7 +32,7 @@
                             <table class="table table-hover">
                                 <thead class="">
                                     <th>
-                                        ID
+                                       Patient ID
                                     </th>
                                     <th>
                                         Date
@@ -54,46 +54,19 @@
                                     </th>
                                     <th>Signed by</th>
                                 </thead>
-                                <tbody>
-                                    <%data.record.forEach(function(record, i){%>
-                                    <tr>
-                                        <td>
-                                            <%=i+1%>
-                                        </td>
-                                        <td>
-                                            <%=record.date%>
-                                        </td>
-                                        <td>
-                                            <%=record.description%>
-                                        </td>
-                                        <td>
-                                            <%=record.prescription%>
-                                        </td>
-                                        <td>
-                                            <%=record.BP%>
-                                        </td>
-                                        <td>
-                                            <%=record.BS%>
-                                        </td>
-                                        <td>
-                                            <%=record.Comment%>
-                                        </td>
-                                        <td>
-                                            <a href="0xc0df4f008f84110eca3dcdd4444644435e2d4fd84dad009477adb96d2608656f">Dr <%=record.Doctor%></a>
-                                        </td>
-                                    </tr>
-                                    <%})%>
+                               <tbody>
                                     <tr>
                                         <form action="/ipfs/edit" method="POST" id="edit">
                                                 <td></td>
-                                                <td><input type="text" value="<%=JSON.stringify(data)%>" name="user[current]" hidden></td>
-                                                <td><input type="text"placeholder="Description" id="desc" name="user[desc]"></td>
+                                                
+                                               
+                                                <td><input type="text" placeholder="Prescription" id="presc" name="user[presc]"></td>
+                                                <td><input type="text" placeholder="Prescription" id="presc" name="user[presc]"></td>
                                                 <td><input type="text" placeholder="Prescription" id="presc" name="user[presc]"></td>
                                                 <td><input type="text" placeholder="Blood Pressure" id="bp" name="user[bp]"></td>
                                                 <td><input type="text" placeholder="Blood sugar" id="bs" name="user[bs]"></td>
                                                 <td><input type="text" placeholder="Comments" id="cmt" name="user[cmt]"></td>
-                                               <td><button onclick = "addTo()">Sign</button></td>
-                                               <td><input type="text"  id="doc" name="user[doc]" value="<%=doc%>" hidden></td>
+                                                <td><button onclick = "addTo()">Sign</button></td>
                                         </form>
                                     </tr>
                                 </tbody>

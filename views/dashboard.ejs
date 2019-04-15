@@ -50,9 +50,9 @@
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="./history">
+                        <a class="nav-link" href="./temporary">
                             <i class="material-icons">content_paste</i>
-                            <p>Table List</p>
+                            <p>Temporary</p>
                         </a>
                     </li>
 
@@ -121,53 +121,100 @@
             <!-- End Navbar -->
             <div class="content">
                 <div class="container-fluid">
-
-                    <%if(!files){%>
-                    <div class="row" style="margin-top: 25px;margin-bottom: 25px;">
-                        <div class="col-lg-4 col-lg-offset-4">
-                            <p id="error" style="color: red;"></p>
-                            <form action="/doctor/fileRequest" id="request" method="POST">
-                                <input type="search" id="search" name="id" class="form-control"
-                                    placeholder="Get Patient details">
-                            </form>
+                        
+                        <%if(!files){%>
+                        <div class="row" style="margin-top: 25px;margin-bottom: 25px;">
+                            
+                            <div class="col-lg-4 col-lg-offset-4">
+                                <p id="error" style="color: red;"></p>
+                                <form action="/doctor/fileRequest" id="request" method="POST">
+                                    <input type="search" id="search" name="id" class="form-control"
+                                        placeholder="Get Patient details">
+                                </form>
+                            </div>
+                            <button style="color:white;background-color:purple;" onclick="request()">Request</button>
+                            <button style="color:white;background-color:grey;" onclick="scanQR()">Scan QR</button>
+                            
                         </div>
-                        <button style="color:white;background-color:purple;" onclick="request()">Request</button>
-                        <button style="color:white;background-color:purple;" onclick="scanQR()">Scan QR</button>
-                    </div>
-                    <div class="row">
-                        <video id="preview"></video>
-                    </div>
-                    <%}else{%>
-                    <div class="row">
-
-
-                        <div class="col-md-4">
-                            <div class="card card-chart">
-                                <div class="card-header card-header-success">
-                                    <img src="../assets/img/record.png" alt="Lab" width="100%" class="responsive-img">
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <%=patient.fname+' '+patient.lname%>
-                                        <i style="font-size:10px;">(<%=patient._id%>)</i>
-                                    </h4>
-                                    <p class="card-category">
-                                        Please <a href="doctor/removefile">delete</a> after use
-                                    </p>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="/ipfs/getFIle/<%=files%>" target="_blank">
-                                        <div class="stats">
-                                            <i class="material-icons">get_app</i> Click here to get your document
+                        <div class="row">
+                            <video id="preview"></video>
+                        </div>
+                        <%}else{%>
+                        <div class="row">
+                                <div class="col-md-4">
+                                        <div class="card card-profile">
+                                            <div class="card-avatar">
+                                                <a href="#pablo">
+                                                    <img class="img"
+                                                        src="https://scontent.fcok1-1.fna.fbcdn.net/v/t31.0-8/15272104_1136063366511379_3374043456228671966_o.jpg?_nc_cat=102&_nc_ht=scontent.fcok1-1.fna&oh=d43132a2e80b9377dfbc7b6431a88716&oe=5CEE4D67" />
+                                                </a>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-category text-gray"><%=patient._id%></h6>
+                                                <h4 class="card-title"> <%=patient.fname+' '+patient.lname%></h4>
+                                                <p class="card-description">Phone : <%=patient.phone%><br>
+                                                    Email : <%=patient.email%><br>Blood : <%=patient.blood%>
+                                                    <br>Gender : <%=patient.gender%></p>
+                                                <a href="doctor/removefile" class="btn btn-primary btn-round">Delete</a>
+                                            </div>
                                         </div>
-                                    </a>
+                                    </div>
+
+                            <div class="col-md-4">
+                                <div class="card card-chart">
+                                    <div class="card-header card-header-success">
+                                        <img src="../assets/img/record.png" alt="Lab" width="100%"
+                                            class="responsive-img">
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            Primary Health Record
+                                            <i style="font-size:10px;">(<%=patient._id%>)</i>
+                                        </h4>
+                                        <p class="card-category">
+                                            Please <a href="doctor/removefile">delete</a> after use
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="/ipfs/getFIle/<%=files%>" target="_blank">
+                                            <div class="stats">
+                                                <i class="material-icons">get_app</i> Click here to get your document
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+
+                            <%};%>
+                            <%if(docs){docs.forEach(function(doc){%>
+
+                            <div class="col-md-4">
+                                <div class="card card-chart">
+                                    <div class="card-header card-header-danger">
+                                        <img src="../assets/img/lab.jpg" alt="Lab" width="100%" class="responsive-img">
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <%=doc.type%>
+                                        </h4>
+                                        <p class="card-category">
+                                            <%=doc.msg%>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href='<%=doc.addr%>' target="_blank">
+                                            <div class="stats">
+                                                <i class="material-icons">get_app</i> Click here to get your document
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <%})};%>
                     </div>
-                    <%};%>
-
+                    
                 </div>
 
             </div>

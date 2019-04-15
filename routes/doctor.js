@@ -23,9 +23,11 @@ router.post('/fileRequest', ensureAuthenticated, (req, res) => {
         }
         let patient_id = user._id;
         let doctor_id = req.user._id;
+        let doctor_name =req.user.fname+' '+req.user.lname;
         const newLog = new Logs({
             patient_id,
-            doctor_id
+            doctor_id,
+            doctor_name
         });
         newLog.save()
             .then((msg) => {
@@ -64,7 +66,7 @@ router.get('/removefile', ensureAuthenticated, (req, res) => {
         if (err) throw err;
     })
     .then(des => {
-        delete req.session.current_patient
+        delete req.session.current_patient;
         res.redirect('/dashboard')
     } )
     .catch(err => console.log(err));

@@ -1,4 +1,8 @@
 const mongoose = require('mongoose');
+var moment = require('moment');
+var today = new Date();
+
+const date = moment(today).format('DD/MM/YYYY HH:mm'); 
 
 const LogsSchema = new mongoose.Schema({
     patient_id:{
@@ -9,9 +13,13 @@ const LogsSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    doctor_name:{
+        type:String,
+        required:true
+    },
     time:{
         type:String,
-        default:new Date().getTime()
+        default:date
     },
     status:{
         type:Boolean,

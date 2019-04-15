@@ -21,30 +21,42 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
             var fileSizeInMegabytes = (fileSizeInBytes / 1000000.0) * 100; 
         }
         if(req.user.role){
-            res.render('dash', {
-                Docs,
-                user: req.user,
-                size: fileSizeInMegabytes
+            Query.notify(req.user._id)
+            .then((notify)=>{
+                res.render('dash', {
+                    Docs,
+                    user: req.user,
+                    size: fileSizeInMegabytes,
+                    notification:notify
+                })
             })
+            .catch((err) => console.log(err))
         }else{
             Query.requestedFile(req.user._id,(err,hash)=>{
+                
                 if (err) throw err;
                 if(hash){
                     Query.getPatient(hash.patient,(err, patient)=>{
-                        if (patient){
-                            req.session.current_patient = patient._id;
-                        }
-                        if (err) throw err;
-                        res.render('dashboard', {
-                            user: req.user,
-                            files: hash.hash,
-                            patient: patient,
-                        })
+                        Query.getTests(patient._id)
+                        .then((Docs) => {
+                            if (patient){
+                                req.session.current_patient = patient._id;
+                            }
+                            if (err) throw err;
+                            res.render('dashboard', {
+                                user: req.user,
+                                files: hash.hash,
+                                patient: patient,
+                                docs:Docs
+                            })
+                        }).catch((err)=>console.log(err));
+                        
                     })
                 }else{
                     res.render('dashboard', {
                         user: req.user,
                         files: null,
+                        docs:null,
                         patient: null,
                     })
                 }
@@ -64,11 +76,21 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
     })
 
 });
-router.get('/history', ensureAuthenticated, (req, res) => {
-    Logs.find({"patient_id":req.user.id}).then((Logs) =>{
+router.get('/temporary', ensureAuthenticated, (req, res) => {
+
+    res.render('temporary', {
+        user: req.user
+    })
+
+});
+router.get('/history', ensureAuthenticated, async (req, res) => {
+    Query.notifications(req.user._id)
+    .then((Logs)=>{
         res.render('tables', {
             user: req.user,
             logs:Logs
         })
-    }).catch(err => console.log(err));
+    })
+    .catch((err)=>console.log(err));
+    
 });

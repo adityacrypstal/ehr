@@ -56,4 +56,22 @@ const requestFile = (data) => {
             .catch((err) => reject(err));
     })
 }
-module.exports = { registration, requestFile }
+const sendTxn = (Id, patient, callback )=>{
+    const msg = {
+        to: patient.email,
+        from: 'adityavadityav@gmail.com',
+        subject: 'New Transaction recorded in you EHR',
+        text: 'New Txn recorded with TXN ID '+Id,
+    };
+    client.messages.create({
+        body: `New transaction recorded in EHR (${Id}).`,
+        from:   '+15109240840',
+        to : '+91' + patient.phone
+    })
+    sgMail.send(msg).then((res)=>{
+        callback(null, 'Mail send');
+    }).catch((err)=>{
+        callback(err, null);
+    })
+}
+module.exports = { registration, requestFile, sendTxn }

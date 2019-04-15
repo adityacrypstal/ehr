@@ -1,138 +1,153 @@
-<div class="row mt-5">
-    <div class="col-md-6 m-auto">
-      <div class="card card-body">
-        <h1 class="text-center mb-3">
-          <i class="fas fa-user-plus"></i> Register
-        </h1>
-        <% include ./partials/messages %>
-
-        <form action="/user/register" method="POST">
-          <br>
-          <div class="form-group" style="margin-left:33%;">
+<html ng-app>
+    <div class="row mt-5">
+        <div class="col-md-6 m-auto">
+          <div class="card card-body">
+            <h1 class="text-center mb-3">
+              <i class="fas fa-user-plus"></i> Register
+            </h1>
+            <% include ./partials/messages %>
+    
+            <form action="/user/register" method="POST">
+              <br>
+              <div class="form-group" style="margin-left:33%;" ng-init="role='true'">
+                  <label class="radio-inline">
+                      <input type="radio" name="role" value="true" ng-model="role" checked> Patient
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="role" value="false" ng-model="role" > Doctor
+                    </label>
+                    
+              </div>
+              <div class="form-group">
+                <label for="fname">First Name</label>
+                <input
+                  type="name"
+                  id="fname"
+                  name="fname"
+                  class="form-control"
+                  placeholder="Enter Name"
+                  value="<%= typeof fname != 'undefined' ? fname : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                  <label for="lname">Last Name</label>
+                  <input
+                    type="name"
+                    id="lname"
+                    name="lname"
+                    class="form-control"
+                    placeholder="Enter Name"
+                    value="<%= typeof lname != 'undefined' ? lname : '' %>"
+                  />
+                </div>
+                <div class="form-group"  ng-if = "role == 'false'">
+                    <label for="license">License</label>
+                    <input
+                      type="name"
+                      id="license"
+                      name="license"
+                      class="form-control"
+                      placeholder="Enter License ID"
+                      required
+                    />
+                  </div>
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input
+                  type="number"
+                  id="phone"
+                  name="phone"
+                  class="form-control"
+                  placeholder="Enter Phone"
+                  value="<%= typeof phone != 'undefined' ? phone : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                <label for="address">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  class="form-control"
+                  placeholder="Enter Address"
+                  value="<%= typeof address != 'undefined' ? address : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="Enter Email"
+                  value="<%= typeof email != 'undefined' ? email : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                <label for="age">Age</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  class="form-control"
+                  placeholder="Enter Age"
+                  value="<%= typeof age != 'undefined' ? age : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                <label for="blood">Blood :</label>
+                <select name="blood" id="blood">
+                  <option value="a+">A+</option>
+                  <option value="a-">A-</option>
+                  <option value="b+">B+</option>
+                  <option value="b-">B-</option>
+                  <option value="o+">O+</option>
+                  <option value="o-">O-</option>
+                  <option value="ab+">AB+</option>
+                  <option value="ab-">AB-</option>
+                </select>
+              </div>
               <label class="radio-inline">
-                  <input type="radio" name="role" value="true" checked> Patient
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="role" value="false"> Doctor
-                </label>
-                
+                <input type="radio" name="gender" value="M" checked> Male
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="gender" value="F"> Female
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="gender" value="O"> Others
+              </label>
+             
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Create Password"
+                  value="<%= typeof password != 'undefined' ? password : '' %>"
+                />
+              </div>
+              <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input
+                  type="password"
+                  id="password2"
+                  name="password2"
+                  class="form-control"
+                  placeholder="Confirm Password"
+                  value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                Register
+              </button>
+            </form>
+            <p class="lead mt-4">Have An Account? <a href="/user/login">Login</a></p>
           </div>
-          <div class="form-group">
-            <label for="fname">First Name</label>
-            <input
-              type="name"
-              id="fname"
-              name="fname"
-              class="form-control"
-              placeholder="Enter Name"
-              value="<%= typeof fname != 'undefined' ? fname : '' %>"
-            />
-          </div>
-          <div class="form-group">
-              <label for="lname">Last Name</label>
-              <input
-                type="name"
-                id="lname"
-                name="lname"
-                class="form-control"
-                placeholder="Enter Name"
-                value="<%= typeof lname != 'undefined' ? lname : '' %>"
-              />
-            </div>
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input
-              type="number"
-              id="phone"
-              name="phone"
-              class="form-control"
-              placeholder="Enter Phone"
-              value="<%= typeof phone != 'undefined' ? phone : '' %>"
-            />
-          </div>
-          <div class="form-group">
-            <label for="address">Address</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              class="form-control"
-              placeholder="Enter Address"
-              value="<%= typeof address != 'undefined' ? address : '' %>"
-            />
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-control"
-              placeholder="Enter Email"
-              value="<%= typeof email != 'undefined' ? email : '' %>"
-            />
-          </div>
-          <div class="form-group">
-            <label for="age">Age</label>
-            <input
-              type="number"
-              id="age"
-              name="age"
-              class="form-control"
-              placeholder="Enter Age"
-              value="<%= typeof age != 'undefined' ? age : '' %>"
-            />
-          </div>
-          <div class="form-group">
-            <label for="blood">Blood :</label>
-            <select name="blood" id="blood">
-              <option value="a+">A+</option>
-              <option value="a-">A-</option>
-              <option value="b+">B+</option>
-              <option value="b-">B-</option>
-              <option value="o+">O+</option>
-              <option value="o-">O-</option>
-              <option value="ab+">AB+</option>
-              <option value="ab-">AB-</option>
-            </select>
-          </div>
-          <label class="radio-inline">
-            <input type="radio" name="gender" value="M" checked> Male
-          </label>
-          <label class="radio-inline">
-            <input type="radio" name="gender" value="F"> Female
-          </label>
-          <label class="radio-inline">
-            <input type="radio" name="gender" value="O"> Others
-          </label>
-         
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-control"
-              placeholder="Create Password"
-              value="<%= typeof password != 'undefined' ? password : '' %>"
-            />
-          </div>
-          <div class="form-group">
-            <label for="password2">Confirm Password</label>
-            <input
-              type="password"
-              id="password2"
-              name="password2"
-              class="form-control"
-              placeholder="Confirm Password"
-              value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">
-            Register
-          </button>
-        </form>
-        <p class="lead mt-4">Have An Account? <a href="/user/login">Login</a></p>
+        </div>
       </div>
-    </div>
-  </div>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    
+</html>

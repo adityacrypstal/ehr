@@ -7,6 +7,9 @@ const File = require('../controllers/file');
 var moment = require('moment');
 var today = new Date();
 const date = moment(today).format('DD/MM/YYYY');
+const Query = require('../controllers/queries');
+const gateway = require('../controllers/gateway.js');
+
 const { ensureAuthenticated } = require('../config/auth');
 
 var fs = require('fs');//File System
@@ -21,7 +24,6 @@ router.get('/addFile', ensureAuthenticated, async (req, res) => {
     //Creating buffer for ipfs function to add file to the system
     let testBuffer = new Buffer(testFile);
     let userid = req.user._id;
-
     await ipfs.files.add(testBuffer, function (err, file) {
         if (err) {
             console.log(err);
@@ -61,7 +63,8 @@ router.get('/getFile/:id', ensureAuthenticated, async (req, res) => {
                     });
                 } else {
                     res.render('edit', {
-                        data: JSON.parse(record)
+                        data: JSON.parse(record),
+                        doc: req.user.fname,
                     });
                 }
             })
@@ -82,7 +85,8 @@ router.get('/getFile/', ensureAuthenticated, async (req, res) => {
                     });
                 } else {
                     res.render('edit', {
-                        data: JSON.parse(record)
+                        data: JSON.parse(record),
+                        doc: req.user.fname,
                     });
                 }
             })
@@ -92,14 +96,16 @@ router.get('/getFile/', ensureAuthenticated, async (req, res) => {
 //need to reconstruct the function
 router.post('/edit', ensureAuthenticated, async (req, res) => {
     var data = JSON.parse(req.body.user.current)
-    let desc = req.body.user.desc;
-    let presc = req.body.user.presc;
-    let bp = req.body.user.bp;
-    let bs = req.body.user.bs;
-    let cmt = req.body.user.cmt;
-    var record = { id: 1, date: date, description: desc, prescription: presc, BP: bp, BS: bs, Comment: cmt };
+    // let desc = req.body.user.desc;
+    // let presc = req.body.user.presc;
+    // let bp = req.body.user.bp;
+    // let bs = req.body.user.bs;
+    // let cmt = req.body.user.cmt;
+    const { desc, presc, bp, bs, cmt, doc } = req.body.user;
+    var record = { id: 1, date: date, description: desc, prescription: presc, BP: bp, BS: bs, Comment: cmt, Doctor: doc };
     data.record.push(record);
     var patient = req.session.current_patient;
+
     File.reEdit(req.session.current_patient, JSON.stringify(data))
         .then(async (success) => {
             //Reading file from computer
@@ -111,8 +117,14 @@ router.post('/edit', ensureAuthenticated, async (req, res) => {
                 if (err) throw err;
                 let hash = file[0].hash;
                 BC.setAddr(patient, hash, (err, res) => {
-                    if (err) throw err
-                    console.log(res);
+                    if (err) throw err;
+                    Query.getPatient(patient, (err, pat) => {
+                        if (err) throw err;
+                        gateway.sendTxn(res, pat, (err, val) => {
+                            if (err) throw err;
+                            console.log(val);
+                        })
+                    })
                 });
             })
             //Deleting file

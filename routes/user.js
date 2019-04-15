@@ -20,7 +20,11 @@ router.get('/register', (req, res) => res.render('register'));
 router.post('/register', (req, res) => {
   let errors = [];
   const { role, fname, lname, phone, address, email, age, blood, gender, password, password2 } = req.body;
-
+  if(role == false){
+    var license = req.body.license;
+  }else{
+    var license = null;
+  }
   // Registration validation starts here
   if (!fname || !lname || !email || !password || !password2 || !phone || !blood || !gender || !age || !address) {
     errors.push({ msg: 'Please enter all fields' });
@@ -35,16 +39,16 @@ router.post('/register', (req, res) => {
   }
 
   if (errors.length > 0) {
-    res.render('register', {errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
+    res.render('register', {errors, fname, lname,license, address, phone, age, gender, blood, email, password, password2 });
   } else {
     User.findOne({ email: email }).then(user => {
       if (user) {
         errors.push({ msg: 'Email already exists' });
         res.render('register', {
-          errors, fname, lname, address, phone, age, gender, blood, email, password, password2 });
+          errors, fname, lname,license, address, phone, age, gender, blood, email, password, password2 });
       } else {
         //Creates User in model
-        const newUser = new User({ role, fname, lname, phone, address, email, age, blood, gender, password });
+        const newUser = new User({ role, fname, lname,license, phone, address, email, age, blood, gender, password });
         //Hashes password and compare pass1 with pass2
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
