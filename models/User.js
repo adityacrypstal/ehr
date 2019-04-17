@@ -15,7 +15,10 @@ const UserSchema = new mongoose.Schema({
     },
     license:{
         type:String,
-        required:true
+        required:false
+    },
+    avatar:{
+        type: Buffer
     },
     phone:{
         type:Number,
@@ -53,6 +56,10 @@ const UserSchema = new mongoose.Schema({
     safe:{
         type:Boolean,
         default:false,
+    },
+    about:{
+        type:String,
+        required:false,
     }
 });
 const User = mongoose.model('User',UserSchema);

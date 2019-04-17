@@ -146,7 +146,7 @@
                                             <div class="card-avatar">
                                                 <a href="#pablo">
                                                     <img class="img"
-                                                        src="https://scontent.fcok1-1.fna.fbcdn.net/v/t31.0-8/15272104_1136063366511379_3374043456228671966_o.jpg?_nc_cat=102&_nc_ht=scontent.fcok1-1.fna&oh=d43132a2e80b9377dfbc7b6431a88716&oe=5CEE4D67" />
+                                                        src="data:image/png;base64,<%=patient.avatar.toString('base64')%>" />
                                                 </a>
                                             </div>
                                             <div class="card-body">
@@ -155,6 +155,7 @@
                                                 <p class="card-description">Phone : <%=patient.phone%><br>
                                                     Email : <%=patient.email%><br>Blood : <%=patient.blood%>
                                                     <br>Gender : <%=patient.gender%></p>
+                                                <p class="card-description"><%=patient.about%></p>
                                                 <a href="doctor/removefile" class="btn btn-primary btn-round">Delete</a>
                                             </div>
                                         </div>
