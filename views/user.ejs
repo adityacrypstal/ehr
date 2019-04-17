@@ -191,7 +191,9 @@
               <div class="card card-profile">
                 <div class="card-avatar">
                   <a href="#pablo">
-                    <img class="img" src="data:image/png;base64,<%=user.avatar.toString('base64')%>" />
+                    <%if(user.avatar){%>
+                      <img class="img" src="data:image/png;base64,<%=user.avatar.toString('base64')%>" />
+                      <%}%>
                   </a>
                 </div>
                 <div class="card-body">

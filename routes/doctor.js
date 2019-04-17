@@ -21,7 +21,8 @@ router.post('/fileRequest', ensureAuthenticated, (req, res) => {
         if (err) {
             console.log(err);
         }
-        let patient_id = user._id;
+        if(user){
+            let patient_id = user._id;
         let doctor_id = req.user._id;
         let doctor_name =req.user.fname+' '+req.user.lname;
         const newLog = new Logs({
@@ -41,7 +42,10 @@ router.post('/fileRequest', ensureAuthenticated, (req, res) => {
                     .catch((err) => console.log(err))
             })
             .catch(err => console.log(err));
-
+        }else{
+            res.redirect('/dashboard')
+        }
+        
     });
 });
 //Patient approving doctor request
