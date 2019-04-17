@@ -141,47 +141,47 @@
                         </div>
                       </div>
                     </div>
-                      <div class="row">
-                        <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Address</label>
+                          <input type="text" class="form-control" name="address" value="<%=user.address%>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Gender</label>
+                          <input type="text" class="form-control" disabled value="<%=user.gender%>">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Phone</label>
+                          <input type="text" class="form-control" name="phone" value="<%=user.phone%>">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Age</label>
+                          <input type="text" class="form-control" disabled value="<%=user.age%>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>About Me</label>
                           <div class="form-group">
-                            <label class="bmd-label-floating">Address</label>
-                            <input type="text" class="form-control" name="address" value="<%=user.address%>">
+                            <label class="bmd-label-floating"> Mention your health condition here</label>
+                            <textarea class="form-control" name="about" rows="5"><%=user.about%></textarea>
                           </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Gender</label>
-                            <input type="text" class="form-control" disabled value="<%=user.gender%>">
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Phone</label>
-                            <input type="text" class="form-control" name="phone" value="<%=user.phone%>">
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Age</label>
-                            <input type="text" class="form-control" disabled value="<%=user.age%>">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div class="form-group">
-                            <label>About Me</label>
-                            <div class="form-group">
-                              <label class="bmd-label-floating"> Mention your health condition here</label>
-                              <textarea class="form-control" name="about" rows="5"><%=user.about%></textarea>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
-                      <div class="clearfix"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
+                    <div class="clearfix"></div>
                   </form>
                 </div>
               </div>
@@ -192,17 +192,19 @@
                 <div class="card-avatar">
                   <a href="#pablo">
                     <%if(user.avatar){%>
-                      <img class="img" src="data:image/png;base64,<%=user.avatar.toString('base64')%>" />
-                      <%}%>
+                    <img class="img" src="data:image/png;base64,<%=user.avatar.toString('base64')%>" />
+                    <%}else{%>
+                    <img class="img" src="http://cdn.onlinewebfonts.com/svg/img_383214.png" />
+                    <%}%>
                   </a>
                 </div>
                 <div class="card-body">
                   <h6 class="card-category text-gray" id="user_id"><%=user._id%></h6>
-                  <h4 class="card-title"><%=user.fname%><%=user.lname%></h4>
-                  <p class="card-description">
-                    <%=user.about%>
-                  </p>
-                  <a href="./user/removeAcnt" class="btn btn-primary btn-round" >Remove Details</a>
+                    <h4 class="card-title"><%=user.fname%><%=user.lname%></h4>
+                    <p class="card-description">
+                      <%=user.about%>
+                    </p>
+                    <a href="./user/removeAcnt" class="btn btn-primary btn-round">Remove Details</a>
                 </div>
               </div>
             </div>
